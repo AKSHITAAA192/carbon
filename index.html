@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarbonTrack | Professional Footprint Calculator</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:400,600&display=swap">
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f331.svg">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --primary: #00b894;
+            --secondary: #00cec9;
+            --bg: #f5f7fa;
+            --text: #222;
+            --card-bg: rgba(255,255,255,0.94);
+            --accent: #fdcb6e;
+            --danger: #e17055;
+            --shadow: 0 6px 32px 0 rgba(0,0,0,0.15);
+            --glass: rgba(255,255,255,0.8);
+            --glass-border: rgba(0,0,0,0.08);
+            --gradient: linear-gradient(120deg, #dff9fb 40%, #f5f7fa 100%);
+            --glass-blur: blur(18px);
+            --input-bg: #f9fafb;
+            --input-focus: #b2f7ef;
+            --nav-link-radius: 0.5em;
+            --hero-gradient: radial-gradient(ellipse 120% 80% at 80% 20%, #b2f7ef 0, #fff0 70%),
+              radial-gradient(ellipse 60% 100% at 20% 80%, #fdcb6e 0, #fff0 70%);
+        }
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: var(--gradient);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            transition: background 0.4s, color 0.4s;
+        }
+        body.dark {
+            --bg: #11151c;
+            --text: #f8f8f8;
+            --card-bg: rgba(30,30,40,0.99);
+            --glass: rgba(30,30,40,0.85);
+            --glass-border: rgba(255,255,255,0.09);
+            --gradient: linear-gradient(120deg, #181c22, #212b36 80%);
+            --input-bg: #232832;
+            --input-focus: #374151;
+            --accent: #ffe066;
+        }
+        header {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: #fff;
+            padding: 0.5em 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            backdrop-filter: blur(10px);
+        }
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2em;
+        }
+        nav ul {
+            display: flex;
+            gap: 1.4em;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            align-items: center;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            border-radius: var(--nav-link-radius);
+            padding: .33em 1.1em .25em 1.1em;
+            border-bottom: 2px solid transparent;
+            letter-spacing: .01em;
+            transition: color 0.2s, border-bottom 0.2s, background .19s;
+        }
+        nav a.active, nav a:hover {
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+            background: rgba(255,255,255,0.07);
+        }
+        #dark-mode-toggle {
+            background: none;
+            border: none;
+            font-size: 1.4em;
+            color: #fff;
+            cursor: pointer;
+            margin-left: 0.5em;
+            transition: background 0.18s;
+            border-radius: 60px;
+            padding: .33em .8em;
+        }
+        #dark-mode-toggle:hover {
+            background: rgba(0,0,0,0.07);
+        }
+        .hero-section {
+            background: var(--hero-gradient), linear-gradient(120deg, #e0f2f1 60%, #fffde7 100%);
+            padding: 5em 0 2.5em 0;
+            position: relative;
+            overflow-x: hidden;
+        }
+        body.dark .hero-section {
+            background: var(--hero-gradient), linear-gradient(120deg, #1b2430 60%, #263238 100%);
+        }
+        .hero-content {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 2.7em 2em 2em 2em;
+            position: relative;
+        }
+        .glass {
+            background: var(--glass);
+            border-radius: 2em;
+            border: 2px solid var(--glass-border);
+            box-shadow: var(--shadow);
+            backdrop-filter: var(--glass-blur);
+        }
+        .cta-button {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 0.8em;
+            padding: 1.1em 2.8em;
+            font-size: 1.14em;
+            cursor: pointer;
+            margin-top: 2em;
+            box-shadow: 0 2px 12px rgba(0,137,123,0.11);
+            letter-spacing: .03em;
+            font-weight: 600;
+            transition: background 0.18s, color .18s, transform .13s;
+        }
+        .cta-button:active { transform: scale(.97); }
+        .cta-button:hover { background: var(--accent); color: #222; }
+        .card {
+            background: var(--card-bg);
+            margin: 2.5em auto;
+            padding: 2.6em 2.8em 2.2em 2.8em;
+            max-width: 800px;
+            border-radius: 1.3em;
+            box-shadow: var(--shadow);
+            position: relative;
+            animation: fadeIn 0.7s;
+            transition: background .3s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        .form-section { margin-bottom: 2.2em; }
+        .form-group { margin-bottom: 1.25em;}
+        input[type=number], select, input[type=text] {
+            width: 100%;
+            padding: 0.85em;
+            border: 1.7px solid #dde;
+            border-radius: 0.5em;
+            font-size: 1.04em;
+            margin-top: 0.28em;
+            background: var(--input-bg);
+            transition: border .23s, background .23s, color .2s;
+        }
+        input[type=number]:focus, select:focus, input[type=text]:focus {
+            border-color: var(--primary);
+            outline: none;
+            background: var(--input-focus);
+        }
+        .submit-button, .secondary-button {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 0.5em;
+            padding: 1em 2.3em;
+            font-size: 1.12em;
+            cursor: pointer;
+            margin-right: 0.9em;
+            margin-top: 1em;
+            margin-bottom: .3em;
+            box-shadow: 0 2px 7px rgba(0,100,90,0.10);
+            font-weight: 600;
+            transition: background 0.19s, color .19s, transform .13s;
+        }
+        .submit-button:active, .secondary-button:active { transform: scale(.97); }
+        .secondary-button {
+            background: var(--bg);
+            color: var(--primary);
+            border: 1.7px solid var(--primary);
+            padding: 1em 1.7em;
+        }
+        .submit-button:hover, .secondary-button:hover, .cta-button:hover {
+            background: var(--accent);
+            color: #222;
+        }
+        .result-card {
+            display: inline-block;
+            width: 44%;
+            margin: 1em 2% 1em 0;
+            vertical-align: top;
+            background: linear-gradient(140deg, var(--secondary) 77%, var(--accent) 100%);
+            color: #fff;
+            border-radius: 1em;
+            box-shadow: var(--shadow);
+            padding: 2em 1em 1.3em 1em;
+            text-align: center;
+            transition: transform 0.22s, background .23s;
+        }
+        .result-card:hover { transform: scale(1.04);}
+        .big-number {
+            font-size: 3.1em;
+            font-weight: bold;
+            margin: 0.9em 0 0.3em 0;
+            letter-spacing: .03em;
+        }
+        .comparison {
+            font-size: 2.1em;
+            margin: .8em 0 .2em 0;
+        }
+        .animated { transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+        .hidden { display: none !important;}
+        .breakdown-bars, .breakdown-chart {margin-top:1em;}
+        .bar-container, .breakdown-item {
+            margin-bottom: 1em;
+        }
+        .bar-bg, .breakdown-bar {
+            background: #eee;
+            border-radius: 1em;
+            width: 80%;
+            height: 16px;
+            display: inline-block;
+            margin-right: 1em;
+            vertical-align: middle;
+            overflow: hidden;
+        }
+        .bar-fill, .breakdown-fill {
+            height: 16px;
+            background: var(--primary);
+            border-radius: 1em;
+            width: 0%;
+            transition: width 0.8s;
+        }
+        .breakdown-label { min-width:80px; display:inline-block;}
+        .stat-card {
+            background: var(--glass);
+            border-radius: 1em;
+            padding: 1.2em;
+            display: inline-block;
+            width: 29%;
+            text-align: center;
+            margin-right: 2%;
+            box-shadow: var(--shadow);
+            margin-top: .8em;
+            margin-bottom: .9em;
+            font-size: 1.09em;
+            transition: background .23s;
+        }
+        #trendChart { margin-top: 2.3em;}
+        .goals-section, .tips-section {margin-top: 2.2em;}
+        .goals-list { list-style: none; padding-left:0;}
+        .goal-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1em;
+            background: var(--glass);
+            border-radius: 0.7em;
+            padding: 0.9em 1.1em;
+            box-shadow: var(--shadow);
+        }
+        .goal-info { flex: 1;}
+        .goal-progress { display: flex; align-items: center;}
+        .progress-bar.small, .progress-bar {
+            height: 14px;
+            background: #eee;
+            border-radius: 1em;
+            width: 112px;
+            margin-right: 1em;
+            overflow: hidden;
+            flex-shrink:0;
+        }
+        .progress-fill { height: 100%; background: var(--secondary); border-radius: 1em; width: 0; transition: width 0.7s;}
+        .goal-percent { font-weight: bold;}
+        .tips-section ul, #tips-list { list-style: disc inside;}
+        .solutions-grid {
+            display: flex;
+            gap: 2em;
+            margin-top: 2em;
+            flex-wrap: wrap;
+        }
+        .solution-card {
+            background: var(--glass);
+            border-radius: 1.1em;
+            padding: 1.3em 1.1em;
+            min-width: 210px;
+            box-shadow: var(--shadow);
+            flex: 1 1 240px;
+            margin-bottom: 1.3em;
+            position: relative;
+            border: 1.5px solid var(--glass-border);
+            transition: box-shadow 0.2s, background .2s;
+        }
+        .solution-card h3 {
+            display: flex;
+            align-items: center;
+            gap: .5em;
+        }
+        .solution-card i {
+            font-size: 1.4em;
+            color: var(--primary);
+        }
+        .solution-card:hover { box-shadow: 0 8px 32px rgba(0,137,123,0.13); border-color: var(--accent);}
+        .account-content {
+            display: flex;
+            gap: 3em;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+        .account-info {
+            flex: 2 2 200px;
+        }
+        .account-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1em;
+            margin-top: 2em;
+        }
+        .avatar-img {
+            width: 92px;
+            height: 92px;
+            border-radius: 50%;
+            margin-top: 1.2em;
+            box-shadow: var(--shadow);
+            object-fit: cover;
+            border: 2px solid var(--accent);
+        }
+        .tooltip {
+            display: inline-block;
+            position: relative;
+            cursor: pointer;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 240px;
+            background-color: #333;
+            color: #fff;
+            text-align: left;
+            border-radius: 8px;
+            padding: 10px;
+            position: absolute;
+            z-index: 22;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -120px;
+            opacity: 0;
+            transition: opacity 0.25s;
+            font-size: .97em;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        .input-icon {
+            font-size: 1.09em;
+            margin-left: .33em;
+            vertical-align: middle;
+            cursor: pointer;
+        }
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.9s;
+        }
+        /* Responsive */
+        @media (max-width: 900px) {
+            .card, .header-container, .footer-content { max-width: 100%; padding: 1em;}
+            .result-card, .stat-card { width: 97%; margin: 1em 0;}
+            .solutions-grid { flex-direction: column;}
+            .account-content { flex-direction: column;}
+            .hero-content { padding: 1.2em 0.5em;}
+        }
+        footer {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: #fff;
+            padding: 2em 0 0.7em 0;
+            margin-top: 4em;
+            box-shadow: 0 -2px 14px rgba(0,137,123,0.09);
+        }
+        .footer-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            gap: 2.7em;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            padding-bottom: 1em;
+        }
+        .footer-section h3 { margin-bottom: 0.7em;}
+        .footer-section ul { list-style: none; padding-left: 0;}
+        .footer-section ul li { margin-bottom: 0.3em;}
+        .footer-section a { color: #fff; text-decoration: underline;}
+        .copyright { text-align: center; font-size: 1em; margin-top: 1.6em;}
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <h1 style="font-size:2.1em;letter-spacing:.02em;"><i class="bi bi-globe-americas"></i> CarbonTrack</h1>
+            <nav>
+                <ul>
+                    <li><a href="#calculator" class="nav-link active"><i class="bi bi-calculator"></i> Calculator</a></li>
+                    <li><a href="#dashboard" class="nav-link"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+                    <li><a href="#insights" class="nav-link"><i class="bi bi-lightbulb"></i> Insights</a></li>
+                    <li><a href="#solutions" class="nav-link"><i class="bi bi-rocket-takeoff"></i> Solutions</a></li>
+                    <li><a href="#account" class="nav-link"><i class="bi bi-person-circle"></i> Account</a></li>
+                    <li>
+                        <button id="dark-mode-toggle" aria-label="Toggle dark mode"><i class="bi bi-moon-stars"></i></button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero" class="hero-section">
+            <div class="hero-content glass fade-in">
+                <h2 style="font-size:2.5em;font-weight:700;">Measure Your Environmental Impact</h2>
+                <p style="font-size:1.35em;margin:1.1em 0 2em 0; font-weight:500;">
+                    Calculate your carbon footprint and discover <span style="color:var(--primary)">personalized ways</span> to reduce it.
+                </p>
+                <a href="#calculator" class="cta-button"><i class="bi bi-bar-chart"></i> Start Calculation</a>
+            </div>
+        </section>
+
+        <!-- Calculator -->
+        <section id="calculator" class="card fade-in">
+            <h2><i class="bi bi-calculator"></i> Carbon Footprint Calculator</h2>
+            <form id="footprintForm" autocomplete="on">
+                <div class="form-section">
+                    <h3><i class="bi bi-truck-front"></i> Transportation</h3>
+                    <div class="form-group">
+                        <label for="car-miles">Car Miles (annual):
+                            <span class="tooltip input-icon">❔
+                                <span class="tooltiptext">Enter your approximate annual car mileage driven. US avg: ~13,500 miles/year.</span>
+                            </span>
+                        </label>
+                        <input type="number" id="car-miles" min="0" step="100" required>
+                        <small class="hint" id="car-miles-hint"></small>
+                    </div>
+                    <div class="form-group">
+                        <label for="public-transport">Public Transport (annual miles):
+                            <span class="tooltip input-icon">❔
+                                <span class="tooltiptext">Estimate total miles travelled by bus, train, subway, or tram per year.</span>
+                            </span>
+                        </label>
+                        <input type="number" id="public-transport" min="0" step="100">
+                    </div>
+                    <div class="form-group">
+                        <label for="flights">Flights (annual hours):
+                            <span class="tooltip input-icon">❔
+                                <span class="tooltiptext">Sum up total hours spent on flights each year. (Round-trip US-Europe ~16h)</span>
+                            </span>
+                        </label>
+                        <input type="number" id="flights" min="0" step="1">
+                    </div>
+                </div>
+                <div class="form-section">
+                    <h3><i class="bi bi-house-door"></i> Home Energy</h3>
+                    <div class="form-group">
+                        <label for="electricity">Electricity (kWh/month):
+                            <span class="tooltip input-icon">❔
+                                <span class="tooltiptext">Monthly electricity usage in kilowatt-hours (kWh). US avg: ~900 kWh/month.</span>
+                            </span>
+                        </label>
+                        <input type="number" id="electricity" min="0" step="50">
+                    </div>
+                    <div class="form-group">
+                        <label for="natural-gas">Natural Gas (therms/month):
+                            <span class="tooltip input-icon">❔
+                                <span class="tooltiptext">Monthly natural gas use in therms. US avg ~60 therms/month.</span>
+                            </span>
+                        </label>
+                        <input type="number" id="natural-gas" min="0" step="10">
+                    </div>
+                </div>
+                <div class="form-section">
+                    <h3><i class="bi bi-basket"></i> Food & Shopping</h3>
+                    <div class="form-group">
+                        <label for="meat-consumption">Meat Consumption:
+                            <span class="tooltip input-icon">❔
+                                <span class="tooltiptext">How often do you eat meat? "Daily" includes red meat/poultry daily.</span>
+                            </span>
+                        </label>
+                        <select id="meat-consumption">
+                            <option value="high">Daily</option>
+                            <option value="medium">3-4 times/week</option>
+                            <option value="low">Vegetarian/Vegan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="shopping">Monthly Shopping ($):
+                            <span class="tooltip input-icon">❔
+                                <span class="tooltiptext">Monthly spending on non-food shopping (clothing, gadgets, etc).</span>
+                            </span>
+                        </label>
+                        <input type="number" id="shopping" min="0" step="50">
+                    </div>
+                </div>
+                <button type="submit" class="submit-button"><i class="bi bi-graph-up-arrow"></i> Calculate My Footprint</button>
+                <button type="reset" class="secondary-button"><i class="bi bi-arrow-counterclockwise"></i> Reset</button>
+            </form>
+        </section>
+
+        <!-- Results -->
+        <section id="results" class="card hidden fade-in">
+            <h2><i class="bi bi-bar-chart-steps"></i> Your Carbon Footprint Results</h2>
+            <div class="results-container">
+                <div class="result-card">
+                    <h3>Total Annual Footprint</h3>
+                    <div class="big-number animated" id="total-footprint">0</div>
+                    <p style="opacity:.88;">metric tons CO₂e</p>
+                </div>
+                <div class="result-card">
+                    <h3>Compared to Average</h3>
+                    <div class="comparison animated" id="comparison-result">0%</div>
+                    <p id="comparison-text">of US average</p>
+                </div>
+            </div>
+            <canvas id="breakdownChart" width="400" height="200" style="margin-top:1.2em;"></canvas>
+            <div class="actions" style="margin-top:1.3em;">
+                <button id="save-results" class="secondary-button"><i class="bi bi-bookmark-plus"></i> Save Results</button>
+                <button id="view-solutions" class="cta-button"><i class="bi bi-emoji-sunglasses"></i> View Reduction Solutions</button>
+            </div>
+        </section>
+
+        <!-- Dashboard -->
+        <section id="dashboard" class="card hidden fade-in">
+            <h2><i class="bi bi-speedometer2"></i> Your Carbon Dashboard</h2>
+            <div class="dashboard-content">
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <h3>Current Footprint</h3>
+                        <div class="stat-value" id="current-footprint">--</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Reduction Goal</h3>
+                        <div class="stat-value" id="reduction-goal">20%</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Progress</h3>
+                        <div class="stat-value" id="progress">--</div>
+                    </div>
+                </div>
+                <canvas id="trendChart" height="120"></canvas>
+                <div class="goals-section">
+                    <h3>Your Reduction Goals</h3>
+                    <ul class="goals-list" id="goals-list"></ul>
+                    <button id="add-goal" class="secondary-button small"><i class="bi bi-plus-circle"></i> Add Goal</button>
+                </div>
+                <div class="tips-section">
+                    <h3>Personalized Tips</h3>
+                    <ul id="tips-list"></ul>
+                    <button id="refresh-tips" class="secondary-button small"><i class="bi bi-arrow-repeat"></i> More Tips</button>
+                </div>
+            </div>
+            <div class="dashboard-actions" style="margin-top:1em;">
+                <button id="export-dashboard" class="secondary-button small"><i class="bi bi-download"></i> Export Data</button>
+            </div>
+        </section>
+
+        <!-- Insights -->
+        <section id="insights" class="card hidden fade-in">
+            <h2><i class="bi bi-lightbulb"></i> Personalized Insights</h2>
+            <div class="insights-content">
+                <div class="insight-card" style="margin-bottom:1.1em;">
+                    <h3><i class="bi bi-graph-up-arrow"></i> Biggest Impact Area</h3>
+                    <p id="biggest-impact">Complete the calculator to see your biggest impact area</p>
+                </div>
+                <div class="insight-card" style="margin-bottom:1.1em;">
+                    <h3><i class="bi bi-stars"></i> Quick Wins</h3>
+                    <ul id="quick-wins">
+                        <li>Complete the calculator to see personalized recommendations</li>
+                    </ul>
+                </div>
+                <div class="insight-card" style="margin-bottom:1.1em;">
+                    <h3><i class="bi bi-bar-chart"></i> Comparison</h3>
+                    <p id="comparison-insight">See how you compare to others in your area</p>
+                </div>
+                <button id="share-insights" class="secondary-button"><i class="bi bi-share"></i> Share Insights</button>
+            </div>
+        </section>
+
+        <!-- Solutions -->
+        <section id="solutions" class="card hidden fade-in">
+            <h2><i class="bi bi-rocket-takeoff"></i> Reduction Solutions</h2>
+            <div class="solutions-grid">
+                <div class="solution-card">
+                    <h3><i class="bi bi-bus-front"></i> Transportation</h3>
+                    <ul>
+                        <li>Use public transportation 1 more day per week</li>
+                        <li>Carpool with colleagues</li>
+                        <li>Consider an electric vehicle</li>
+                        <li>Bike or walk for short trips</li>
+                        <li>Maintain tire pressure for fuel efficiency</li>
+                    </ul>
+                </div>
+                <div class="solution-card">
+                    <h3><i class="bi bi-house"></i> Home Energy</h3>
+                    <ul>
+                        <li>Lower thermostat by 2°F in winter</li>
+                        <li>Switch to LED bulbs</li>
+                        <li>Install smart power strips</li>
+                        <li>Insulate windows/doors</li>
+                        <li>Use programmable thermostats</li>
+                    </ul>
+                </div>
+                <div class="solution-card">
+                    <h3><i class="bi bi-basket"></i> Food & Shopping</h3>
+                    <ul>
+                        <li>Meat-free Mondays</li>
+                        <li>Buy local produce</li>
+                        <li>Reduce food waste</li>
+                        <li>Choose reusable shopping bags</li>
+                        <li>Buy second-hand when possible</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="solutions-actions" style="margin-top:1.1em;">
+                <button id="favorite-solutions" class="secondary-button"><i class="bi bi-heart"></i> Save Favorites</button>
+            </div>
+        </section>
+
+        <!-- Account -->
+        <section id="account" class="card hidden fade-in">
+            <h2><i class="bi bi-person-circle"></i> Your Account</h2>
+            <div class="account-content">
+                <div class="account-info">
+                    <h3>Profile Information</h3>
+                    <label>
+                        Name: <input type="text" id="account-name" value="User" autocomplete="name">
+                    </label>
+                    <p>Member since: <span id="join-date">2025</span></p>
+                    <label>
+                        Avatar: <input type="file" id="avatar-upload" accept="image/*">
+                    </label>
+                    <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=User" alt="Avatar" id="avatar-img" class="avatar-img">
+                </div>
+                <div class="account-actions">
+                    <button id="save-profile" class="secondary-button"><i class="bi bi-save"></i> Save Profile</button>
+                    <button id="logout" class="secondary-button"><i class="bi bi-box-arrow-right"></i> Log Out</button>
+                    <button id="toggle-theme" class="secondary-button"><i class="bi bi-moon-stars"></i> Toggle Dark Mode</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>CarbonTrack</h3>
+                <p>Helping individuals and businesses understand and reduce their environmental impact since 2025.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href="#">Climate Science</a></li>
+                    <li><a href="#">Carbon Offsetting</a></li>
+                    <li><a href="#">Sustainable Living</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Connect</h3>
+                <ul>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">API for Developers</a></li>
+                    <li><a href="#">Careers</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 CarbonTrack. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- SPA Navigation ---
+        const sections = Array.from(document.querySelectorAll("main > section"));
+        const navLinks = Array.from(document.querySelectorAll('.nav-link'));
+        function showSection(id) {
+            sections.forEach(section => section.classList.toggle('hidden', section.id !== id));
+            navLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === '#' + id));
+            window.scrollTo({top:0,behavior:"smooth"});
+        }
+        navLinks.forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                const id = link.getAttribute('href').substring(1);
+                showSection(id);
+                history.replaceState({}, '', '#' + id);
+            })
+        });
+        // On load: show hash section if present
+        if (location.hash && document.getElementById(location.hash.substring(1))) {
+            showSection(location.hash.substring(1));
+        } else {
+            showSection('calculator');
+        }
+
+        // --- Dark Mode ---
+        const darkToggle = document.getElementById('dark-mode-toggle');
+        function setTheme(dark) {
+            document.body.classList.toggle('dark', dark);
+            localStorage.setItem('theme', dark ? 'dark' : 'light');
+            darkToggle.innerHTML = dark ? '<i class="bi bi-sun"></i>' : '<i class="bi bi-moon-stars"></i>';
+        }
+        darkToggle.addEventListener('click', () => setTheme(!document.body.classList.contains('dark')));
+        if(localStorage.getItem('theme') === 'dark') setTheme(true);
+
+        // --- Calculator ---
+        const carMilesInput = document.getElementById('car-miles');
+        carMilesInput.addEventListener('input', () => {
+            const val = parseInt(carMilesInput.value, 10);
+            const hint = document.getElementById('car-miles-hint');
+            if(val > 20000) hint.textContent = "That's a lot! Consider carpooling or remote work.";
+            else if(val < 3000 && val > 0) hint.textContent = "Great, that's well below average!";
+            else hint.textContent = "";
+        });
+
+        // Form Validation Improvements
+        document.getElementById('footprintForm').addEventListener('submit', function(e){
+            e.preventDefault();
+            let valid = true;
+            this.querySelectorAll('input[required]').forEach(input => {
+                if (!input.value || +input.value < 0) {
+                    input.style.borderColor = 'var(--danger)';
+                    valid = false;
+                } else {
+                    input.style.borderColor = '';
+                }
+            });
+            if (!valid) {
+                alert('Please fill all required fields correctly.');
+                return;
+            }
+
+            // Calculation logic
+            const carMiles = +document.getElementById('car-miles').value || 0;
+            const publicTransport = +document.getElementById('public-transport').value || 0;
+            const flights = +document.getElementById('flights').value || 0;
+            const electricity = +document.getElementById('electricity').value || 0;
+            const naturalGas = +document.getElementById('natural-gas').value || 0;
+            const meat = document.getElementById('meat-consumption').value;
+            const shopping = +document.getElementById('shopping').value || 0;
+
+            let transport = (carMiles*0.000404) + (publicTransport*0.000089) + (flights*0.254);
+            let home = (electricity*12*0.000743) + (naturalGas*12*0.0053);
+            let food = (meat==='high'?2.5:(meat==='medium'?1.5:0.8)) + (shopping*12*0.0007);
+
+            let total = +(transport + home + food).toFixed(2);
+            let usAvg = 16.5; // US average metric tons CO₂e
+
+            animateNumber('total-footprint', total, 1200, 2);
+            animateNumber('comparison-result', (total/usAvg*100), 1200, 1, '%');
+
+            document.getElementById('results').classList.remove('hidden');
+            showSection('results');
+            // Chart.js breakdown
+            showBreakdownChart([transport, home, food], total);
+            // Save to localStorage history
+            let historyArr = JSON.parse(localStorage.getItem('footprintHistory') || '[]');
+            historyArr.push({date: new Date().toISOString(), total, transport, home, food});
+            localStorage.setItem('footprintHistory', JSON.stringify(historyArr));
+            // Dashboard update
+            updateDashboard();
+            updateInsights(total, {transport, home, food});
+        });
+
+        // Custom reset: clear hints, result, and errors
+        document.getElementById('footprintForm').addEventListener('reset', function() {
+            setTimeout(() => {
+                document.getElementById('car-miles-hint').textContent = '';
+                this.querySelectorAll('input').forEach(input => input.style.borderColor = '');
+                document.getElementById('results').classList.add('hidden');
+                document.getElementById('total-footprint').textContent = '0';
+                document.getElementById('comparison-result').textContent = '0%';
+                if (window.breakdownChartObj) window.breakdownChartObj.destroy();
+            }, 10);
+        });
+
+        function animateNumber(id, end, duration, decimals=0, suffix='') {
+            const el = document.getElementById(id);
+            const start = +el.textContent.replace(/[^0-9.]/g,"") || 0;
+            const step = (timestamp, startTime, lastVal) => {
+                const now = performance.now();
+                const progress = Math.min((now - startTime) / duration, 1);
+                const value = start + (end - start) * progress;
+                el.textContent = value.toFixed(decimals) + suffix;
+                if(progress < 1) requestAnimationFrame((t) => step(t, startTime, value));
+            };
+            requestAnimationFrame((t) => step(t, t, start));
+        }
+        function showBreakdownChart(values, total) {
+            const ctx = document.getElementById('breakdownChart').getContext('2d');
+            if(window.breakdownChartObj) window.breakdownChartObj.destroy();
+            window.breakdownChartObj = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Transport', 'Home Energy', 'Food & Shopping'],
+                    datasets: [{
+                        data: values.map(v=>+v.toFixed(2)),
+                        backgroundColor: ['#00b894', '#fdcb6e', '#e17055'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: { callbacks: { label: d => d.label + ': ' + d.parsed + ' t CO₂e' } }
+                    }
+                }
+            });
+        }
+
+        // --- Results Actions ---
+        document.getElementById('save-results').addEventListener('click', () => {
+            alert('Results saved to your dashboard history!');
+        });
+        document.getElementById('view-solutions').addEventListener('click', () => {
+            showSection('solutions');
+        });
+
+        // --- Dashboard ---
+        function updateDashboard() {
+            let historyArr = JSON.parse(localStorage.getItem('footprintHistory') || '[]');
+            if (historyArr.length === 0) {
+                document.getElementById('current-footprint').textContent = '--';
+                document.getElementById('progress').textContent = '--';
+                if(window.trendChartObj) window.trendChartObj.destroy();
+                return;
+            }
+            const current = historyArr[historyArr.length-1];
+            document.getElementById('current-footprint').textContent = current.total+"";
+            document.getElementById('progress').textContent = Math.max(0, ((1-current.total/16.5)*100).toFixed(1))+"%";
+            // Goals
+            renderGoals(current);
+            // Chart.js trend
+            const trendCtx = document.getElementById('trendChart').getContext('2d');
+            if(window.trendChartObj) window.trendChartObj.destroy();
+            window.trendChartObj = new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: historyArr.map(h=>new Date(h.date).toLocaleDateString()),
+                    datasets: [{
+                        label:"Total CO₂e",
+                        data: historyArr.map(h=>h.total),
+                        fill: true,
+                        backgroundColor: 'rgba(0,137,123,0.12)',
+                        borderColor: "#00b894",
+                        pointBackgroundColor: '#fdcb6e',
+                        tension: 0.23
+                    }]
+                },
+                options: {responsive:true,plugins:{legend:{display:false}}}
+            });
+            renderTips();
+        }
+        function renderGoals(current) {
+            // Smart goals based on current biggest area
+            let biggest = 'Transportation', percent = 0;
+            if (current) {
+                let max = Math.max(current.transport, current.home, current.food);
+                if (current.transport === max) biggest = 'Transportation';
+                else if (current.home === max) biggest = 'Home Energy';
+                else biggest = 'Food';
+                percent = ((max/current.total)*100).toFixed(1);
+            }
+            const goals = [
+                { name: "Transportation", target: 15, progress: biggest==="Transportation"?percent:30 },
+                { name: "Home Energy", target: 10, progress: biggest==="Home Energy"?percent:45 },
+                { name: "Food", target: 5, progress: biggest==="Food"?percent:15 },
+            ];
+            const ul = document.getElementById('goals-list');
+            ul.innerHTML = '';
+            goals.forEach(goal => {
+                const li = document.createElement('li');
+                li.className = 'goal-item';
+                li.innerHTML = `
+                  <div class="goal-info">
+                    <span class="goal-name">${goal.name}</span>
+                    <span class="goal-target">Reduce by ${goal.target}%</span>
+                  </div>
+                  <div class="goal-progress">
+                    <div class="progress-bar small">
+                      <div class="progress-fill" style="width: ${goal.progress}%"></div>
+                    </div>
+                    <span class="goal-percent">${goal.progress}%</span>
+                  </div>
+                `;
+                ul.appendChild(li);
+            });
+        }
+        function renderTips() {
+            const tips = [
+                "Switch to LED bulbs to save energy.",
+                "Use public transport more often.",
+                "Try a vegetarian meal once a week.",
+                "Reduce, reuse, recycle.",
+                "Carpool to reduce emissions.",
+                "Buy local products to lower transport emissions.",
+                "Combine errands to make fewer trips.",
+                "Hang clothes to dry instead of using dryer.",
+                "Unplug unused chargers and devices.",
+                "Opt for digital receipts.",
+                "Bike or walk for short distances.",
+                "Insulate your home for energy savings.",
+                "Cut down on food waste with meal planning."
+            ];
+            const tipsList = document.getElementById('tips-list');
+            tipsList.innerHTML = '';
+            let chosen = [];
+            while (chosen.length < 3) {
+                let i = Math.floor(Math.random()*tips.length);
+                if (!chosen.includes(i)) {
+                    const li = document.createElement('li');
+                    li.textContent = tips[i];
+                    tipsList.appendChild(li);
+                    chosen.push(i);
+                }
+            }
+        }
+        document.getElementById('refresh-tips').addEventListener('click', renderTips);
+        document.getElementById('add-goal').addEventListener('click', () => alert("Goal editing coming soon!"));
+        document.getElementById('export-dashboard').addEventListener('click', () => {
+            const historyArr = localStorage.getItem('footprintHistory');
+            if (!historyArr || historyArr.length < 2) {
+                alert('No data to export yet!');
+                return;
+            }
+            const blob = new Blob([historyArr], {type: "application/json"});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = "carbontrack_history.json"; a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        // --- Insights ---
+        function updateInsights(total, breakdown) {
+            const maxKey = Object.keys(breakdown).reduce((a,b) => breakdown[a]>breakdown[b]?a:b);
+            document.getElementById('biggest-impact').textContent =
+                maxKey.charAt(0).toUpperCase() + maxKey.slice(1) + ' (' + breakdown[maxKey].toFixed(2) + ' t CO₂e)';
+            const quickWins = {
+                transport: ["Use public transport", "Carpool", "Remote work 1 day/week", "Bike for short trips"],
+                home: ["Lower thermostat", "Use LED bulbs", "Smart power strips", "Unplug devices"],
+                food: ["Meat-free Mondays", "Buy local produce", "Reduce food waste", "Compost food scraps"]
+            };
+            const qwinList = document.getElementById('quick-wins');
+            qwinList.innerHTML = '';
+            (quickWins[maxKey]||[]).forEach(tip => {
+                const li = document.createElement('li');
+                li.textContent = tip;
+                qwinList.appendChild(li);
+            });
+            document.getElementById('comparison-insight').textContent =
+                `Your footprint is ${(total/16.5*100).toFixed(1)}% of the US average.`;
+        }
+        document.getElementById('share-insights').addEventListener('click', ()=>{
+            const text = document.getElementById('comparison-insight').textContent;
+            navigator.clipboard.writeText(`My CarbonTrack: ${text}`).then(() => {
+                alert("Insights copied to clipboard! Share it anywhere.");
+            });
+        });
+
+        // --- Solutions ---
+        document.getElementById('favorite-solutions').addEventListener('click', ()=>{
+            alert("Save favorite solutions coming soon!");
+        });
+
+        // --- Account ---
+        const accName = document.getElementById('account-name');
+        const accImg = document.getElementById('avatar-img');
+        const avatarInput = document.getElementById('avatar-upload');
+        accName.addEventListener('input', e => {
+            accImg.src = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${encodeURIComponent(accName.value)}`
+        });
+        avatarInput.addEventListener('change', e => {
+            const file = avatarInput.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => accImg.src = e.target.result;
+            reader.readAsDataURL(file);
+        });
+        document.getElementById('save-profile').addEventListener('click', ()=>{
+            localStorage.setItem('profileName', accName.value);
+            localStorage.setItem('profileAvatar', accImg.src);
+            alert("Profile saved!");
+        });
+        document.getElementById('logout').addEventListener('click', ()=>{
+            localStorage.clear();
+            alert("Logged out. Data cleared.");
+            location.reload();
+        });
+        document.getElementById('toggle-theme').addEventListener('click', ()=>{
+            setTheme(!document.body.classList.contains('dark'));
+        });
+
+        // --- Initial load: profile, dashboard, etc.
+        if(localStorage.getItem('profileName')) accName.value = localStorage.getItem('profileName');
+        if(localStorage.getItem('profileAvatar')) accImg.src = localStorage.getItem('profileAvatar');
+        updateDashboard();
+    </script>
+</body>
+</html>
